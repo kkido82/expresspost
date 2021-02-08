@@ -16,13 +16,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const db = require('./app/models');
+
 if (config.environment === 'production') {
     db.sequelize.sync();
 }
 
 
 
-const usersRoute = require('./app/routes/users');
+// const usersRoute = require('./app/routes/users');
 
 const router = express.Router();
 
@@ -30,6 +31,8 @@ app.get('/', (req, res) => {
     res.json({ success: true, message: 'API is working!' });
 });
 
+// app.get('', [() => {}], (req, res) => {});
+// router.route('aaa').get([() => {}], (req, res) => {});
 
 // router.use(usersRoute);
 // router.use('/post', postRoute);
@@ -48,10 +51,11 @@ app.listen(port, () => {
 if (config.environment === 'development') {
     const Role = db.role;
 
-    db.sequelize.sync({ force: true }).then(() => {
-        console.log('Drop and Resync Db');
-        initial();
-    });
+    // db.sequelize.sync({ force: true }).then(() => {
+    //     console.log('Drop and Resync Db');
+    //     initial();
+    // });
+    db.sequelize.sync();
 
     function initial() {
         Role.create({

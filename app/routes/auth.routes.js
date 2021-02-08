@@ -11,14 +11,20 @@ module.exports = function (app, router) {
         next();
     });
 
-    app.post(
-        "/api/auth/signup",
-        [
-          verifySignUp.checkDuplicateUsernameOrEmail,
-          verifySignUp.checkRolesExisted
-        ],
-        controller.signup
-      );
-    
-      app.post("/api/auth/signin", controller.signin);
+
+    router.route('/auth/signup')
+        .post([verifySignUp.checkDuplicateUsernameOrEmail, verifySignUp.checkRolesExisted],
+            controller.signup);
+
+    // app.post(
+    //     "/api/auth/signup",
+    //     [
+    //         verifySignUp.checkDuplicateUsernameOrEmail,
+    //         verifySignUp.checkRolesExisted
+    //     ],
+    //     controller.signup
+    // );
+
+    router.route('/auth/signin').post(controller.signin);
+    // app.post("/api/auth/signin", controller.signin);
 };

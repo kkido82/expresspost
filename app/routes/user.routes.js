@@ -7,23 +7,29 @@ module.exports = function (app, router) {
         next();
     });
 
-    app.get("/api/test/all", controller.allAccess);
+    router.route('/users').get(controller.allAccess);
+    // app.get("/api/test/all", controller.allAccess);
 
-    app.get(
-      "/api/test/user",
-      [authJwt.verifyToken],
-      controller.userBoard
-    );
+      
+    router.route('/users/user').get([authJwt.verifyToken], controller.userBoard);
+
+    // app.get(
+    //   "/api/test/user",
+    //   [authJwt.verifyToken],
+    //   controller.userBoard
+    // );
+    router.route('/users/mod').get([authJwt.verifyToken, authJwt.isModerator], controller.moderatorBoard);
+
+    // app.get(
+    //   "/api/test/mod",
+    //   [authJwt.verifyToken, authJwt.isModerator],
+    //   controller.moderatorBoard
+    // );
   
-    app.get(
-      "/api/test/mod",
-      [authJwt.verifyToken, authJwt.isModerator],
-      controller.moderatorBoard
-    );
-  
-    app.get(
-      "/api/test/admin",
-      [authJwt.verifyToken, authJwt.isAdmin],
-      controller.adminBoard
-    );
+    router.route('/users/admin').get([authJwt.verifyToken, authJwt.isAdmin], controller.adminBoard);
+    // app.get(
+    //   "/api/test/admin",
+    //   [authJwt.verifyToken, authJwt.isAdmin],
+    //   controller.adminBoard
+    // );
 };
