@@ -1,69 +1,72 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-
-const path = require('path');
-
-const postRoute = require('./routes/post');
-const usersRoute = require('./routes/users');
+const cors = require('cors');
+const config = require('./app/config/app.config');
 
 const app = express();
-const router = express.Router();
-const port = process.env.port || 3000;
 
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+var corsOptions = {
+    origin: 'http://localhost:4200'
+}
+
+app.use(cors(corsOptions));
+
 app.use(bodyParser.json());
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({ extended: true }));
+
+const db = require('./app/models');
+if (config.environment === 'production') {
+    db.sequelize.sync();
+}
 
 
 
-// Add headers
-app.use(function (req, res, next) {
+const usersRoute = require('./app/routes/users');
 
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', '*');
+const router = express.Router();
 
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-    // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', ['X-Requested-With,content-type']);
-
-    // Set to true if you need the website to include cookies in the requests sent
-    // to the API (e.g. in case you use sessions)
-    res.setHeader('Access-Control-Allow-Credentials', true);
-
-    // Pass to next layer of middleware
-    next();
-});
-
-// app.post('/get-report', function (req, res) {
-//     const data = req.body;
-// });
-
-app.get('/', function (req, res, next) {
-    // console.log('get is working');
-
+app.get('/', (req, res) => {
     res.json({ success: true, message: 'API is working!' });
 });
 
-// app.use('/get-report', postRoute);
-// app.use(['/users', '/user'], usersRoute);
-router.use(usersRoute);
-router.use('/post', postRoute);
 
-// router.route(['/users', '/u']).get(function(req,res) {
-//     res.json("a");
-// });
+// router.use(usersRoute);
+// router.use('/post', postRoute);
 
-
-
-
+// routes
+require('./app/routes/auth.routes')(app, router);
+require('./app/routes/user.routes')(app, router);
 
 app.use('/api', router);
 
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log('Server is running on port:', port);
 });
+
+if (config.environment === 'development') {
+    const Role = db.role;
+
+    db.sequelize.sync({ force: true }).then(() => {
+        console.log('Drop and Resync Db');
+        initial();
+    });
+
+    function initial() {
+        Role.create({
+            id: 1,
+            name: "user"
+        });
+
+        Role.create({
+            id: 2,
+            name: "moderator"
+        });
+
+        Role.create({
+            id: 3,
+            name: "admin"
+        });
+    }
+}
