@@ -38,6 +38,7 @@ app.get('/', (req, res) => {
 // router.use('/post', postRoute);
 
 // routes
+// router.use(require('./app/routes/users'));
 require('./app/routes/auth.routes')(app, router);
 require('./app/routes/user.routes')(app, router);
 
