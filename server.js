@@ -25,26 +25,23 @@ if (config.environment === 'production') {
 
 // const usersRoute = require('./app/routes/users');
 
-const router = express.Router();
+const router = express.Router().use(cors(corsOptions));
 
-app.get('/', (req, res) => {
+
+app.get('/test/api', (req, res) => {
     res.json({ success: true, message: 'API is working!' });
 });
 
-// app.get('', [() => {}], (req, res) => {});
-// router.route('aaa').get([() => {}], (req, res) => {});
 
 // router.use(usersRoute);
-// router.use('/post', postRoute);
 
 // routes
-// router.use(require('./app/routes/users'));
-require('./app/routes/auth.routes')(app, router);
-require('./app/routes/user.routes')(app, router);
+require('./app/routes/auth.routes')(router);
+require('./app/routes/user.routes')(router);
 
 app.use('/api', router);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 app.listen(port, () => {
     console.log('Server is running on port:', port);
 });
