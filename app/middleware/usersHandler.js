@@ -1,7 +1,7 @@
 const db = require('../models');
 const User = db.user;
 
-getUserById = (req, res, next) => {
+getById = (req, res, next) => {
     const { id } = req.params;
     console.log(id);
     User.findByPk(id).then(user => {
@@ -19,8 +19,21 @@ getUserById = (req, res, next) => {
     });
 };
 
+getAll = (req, res, next) => {
+    User.findAll().then(users => {
+        if (!users?.length) {
+            return res.status(400).send({ message: 'Users list is empty.' });
+        }
+
+        req.users = users.map(u => { return { id: u.id, email: u.email, username: u.username } });
+
+        next();
+    })
+};
+
 const user = {
-    getUserById
+    getById,
+    getAll
 }
 
 module.exports = user;

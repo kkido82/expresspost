@@ -14,11 +14,11 @@ module.exports = function (router) {
     });
 
 
-    router.route('/users').get(controller.allAccess);
+    router.route('/users').get([authJwt.verifyToken, authJwt.isAdmin, user.getAll], controller.allAccess);
     // app.get("/api/test/all", controller.allAccess);
 
 
-    router.route('/users/:id').get([authJwt.verifyToken, user.getUserById], controller.userBoard);
+    router.route('/users/:id').get([authJwt.verifyToken, user.getById], controller.userBoard);
 
     // app.get(
     //   "/api/test/user",
