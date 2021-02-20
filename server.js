@@ -5,11 +5,11 @@ const config = require('./app/config/app.config');
 
 const app = express();
 
-var corsOptions = {
-    origin: 'http://localhost:4200'
-}
+// var corsOptions = {
+//     origin: 'http://localhost:4200'
+// }
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.use(bodyParser.json());
 
@@ -25,7 +25,7 @@ if (config.environment === 'production') {
 
 // const usersRoute = require('./app/routes/users');
 
-const router = express.Router().use(cors(corsOptions));
+const router = express.Router().use(cors());
 
 
 app.get('/test/api', (req, res) => {
